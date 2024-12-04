@@ -1,9 +1,9 @@
 import { useState } from "react";
-
-// library imports
 import { PlusIcon } from "@heroicons/react/24/solid";
+import { useTodoContext } from "../contexts/TodoContext";
 
-const CustomForm = ({ addTask }) => {
+const CustomForm = () => {
+  const { addTask } = useTodoContext();
   const [task, setTask] = useState("");
 
   const handleFormSubmit = (e) => {
@@ -40,4 +40,5 @@ const CustomForm = ({ addTask }) => {
     </form>
   );
 };
+
 export default CustomForm;

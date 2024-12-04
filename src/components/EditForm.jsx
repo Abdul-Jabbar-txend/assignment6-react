@@ -1,14 +1,16 @@
 import { useState, useEffect } from "react";
-
-// library imports
 import { CheckIcon } from "@heroicons/react/24/solid";
+import { useTodoContext } from "../contexts/TodoContext";
 
-const EditForm = ({ editedTask, updateTask, closeEditMode }) => {
-  const [updatedTaskName, setUpdatedTaskName] = useState(editedTask.name);
+const EditForm = () => {
+  const { editedTask, updateTask, closeEditMode } = useTodoContext();
+  const [updatedTaskName, setUpdatedTaskName] = useState(
+    editedTask?.name || ""
+  );
 
   useEffect(() => {
     const closeModalIfEscaped = (e) => {
-      e.key === "Escape" && closeEditMode();
+      if (e.key === "Escape") closeEditMode();
     };
 
     window.addEventListener("keydown", closeModalIfEscaped);
@@ -27,9 +29,7 @@ const EditForm = ({ editedTask, updateTask, closeEditMode }) => {
     <div
       role="dialog"
       aria-labelledby="editTask"
-      onClick={(e) => {
-        e.target === e.currentTarget && closeEditMode();
-      }}
+      onClick={(e) => e.target === e.currentTarget && closeEditMode()}
     >
       <form className="todo" onSubmit={handleFormSubmit}>
         <div className="wrapper">
@@ -50,8 +50,8 @@ const EditForm = ({ editedTask, updateTask, closeEditMode }) => {
         </div>
         <button
           className="btn"
-          aria-label={`Confirm edited task to now read ${updatedTaskName}`}
           type="submit"
+          aria-label={`Confirm edited task to now read ${updatedTaskName}`}
         >
           <CheckIcon strokeWidth={2} height={24} width={24} />
         </button>
@@ -59,4 +59,5 @@ const EditForm = ({ editedTask, updateTask, closeEditMode }) => {
     </div>
   );
 };
+
 export default EditForm;

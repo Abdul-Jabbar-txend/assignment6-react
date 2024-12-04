@@ -1,55 +1,32 @@
-import { useState } from "react";
-
-// custom hooks
-import useLocalStorage from "./hooks/useLocalStorage";
-
-// custom components
+import { useEffect } from "react";
+import { useTodoContext } from "./contexts/TodoContext";
 import CustomForm from "./components/CustomForm";
 import EditForm from "./components/EditForm";
 import TaskList from "./components/TaskList";
 
-function App() {
-  const [tasks, setTasks] = useLocalStorage("react-todo.tasks", []);
-  const [previousFocusEl, setPreviousFocusEl] = useState(null);
-  const [editedTask, setEditedTask] = useState(null);
-  const [isEditing, setIsEditing] = useState(false);
+const App = () => {
+  const {
+    tasks,
+    isEditing,
+    editedTask,
+    addTask,
+    deleteTask,
+    toggleTask,
+    updateTask,
+    startEditTodo,
+    closeEditMode,
+  } = useTodoContext();
 
-  const addTask = (task) => {
-    setTasks((prevState) => [...prevState, task]);
-  };
-
-  const deleteTask = (id) => {
-    setTasks((prevState) => prevState.filter((t) => t.id !== id));
-  };
-
-  const toggleTask = (id) => {
-    setTasks((prevState) =>
-      prevState.map((t) => (t.id === id ? { ...t, checked: !t.checked } : t))
-    );
-  };
-
-  const updateTask = (task) => {
-    setTasks((prevState) =>
-      prevState.map((t) => (t.id === task.id ? { ...t, name: task.name } : t))
-    );
-    closeEditMode();
-  };
-
-  const closeEditMode = () => {
-    setIsEditing(false);
-    previousFocusEl.focus();
-  };
-
-  const enterEditMode = (task) => {
-    setEditedTask(task);
-    setIsEditing(true);
-    setPreviousFocusEl(document.activeElement);
-  };
+  useEffect(() => {
+    if (isEditing) {
+      document.getElementById("editTask").focus();
+    }
+  }, [isEditing]);
 
   return (
     <div className="container">
       <header>
-        <h1>Todo app </h1>
+        <h1>Todo App</h1>
       </header>
       {isEditing && (
         <EditForm
@@ -59,16 +36,14 @@ function App() {
         />
       )}
       <CustomForm addTask={addTask} />
-      {tasks && (
-        <TaskList
-          tasks={tasks}
-          deleteTask={deleteTask}
-          toggleTask={toggleTask}
-          enterEditMode={enterEditMode}
-        />
-      )}
+      <TaskList
+        tasks={tasks}
+        deleteTask={deleteTask}
+        toggleTask={toggleTask}
+        enterEditMode={startEditTodo}
+      />
     </div>
   );
-}
+};
 
 export default App;

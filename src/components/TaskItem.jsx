@@ -1,17 +1,17 @@
 import { useState } from "react";
-
-// styles
+import {
+  CheckIcon,
+  PencilSquareIcon,
+  TrashIcon,
+} from "@heroicons/react/24/outline";
 import styles from "./TaskItem.module.css";
+import { useTodoContext } from "../contexts/TodoContext";
 
-// Library imports
-import { CheckIcon } from "@heroicons/react/24/outline";
-import { PencilSquareIcon } from "@heroicons/react/24/outline";
-import { TrashIcon } from "@heroicons/react/24/outline";
-
-const TaskItem = ({ task, deleteTask, toggleTask, enterEditMode }) => {
+const TaskItem = ({ task }) => {
   const [isChecked, setIsChecked] = useState(task.checked);
+  const { deleteTask, toggleTask, startEditTodo } = useTodoContext();
 
-  const handleCheckboxChange = (e) => {
+  const handleCheckboxChange = () => {
     setIsChecked(!isChecked);
     toggleTask(task.id);
   };
@@ -24,7 +24,6 @@ const TaskItem = ({ task, deleteTask, toggleTask, enterEditMode }) => {
           className={styles.checkbox}
           checked={isChecked}
           onChange={handleCheckboxChange}
-          name={task.name}
           id={task.id}
         />
         <label htmlFor={task.id} className={styles.label}>
@@ -38,11 +37,10 @@ const TaskItem = ({ task, deleteTask, toggleTask, enterEditMode }) => {
         <button
           className="btn"
           aria-label={`Update ${task.name} Task`}
-          onClick={() => enterEditMode(task)}
+          onClick={() => startEditTodo(task)}
         >
           <PencilSquareIcon width={24} height={24} />
         </button>
-
         <button
           className={`btn ${styles.delete}`}
           aria-label={`Delete ${task.name} Task`}
@@ -54,4 +52,5 @@ const TaskItem = ({ task, deleteTask, toggleTask, enterEditMode }) => {
     </li>
   );
 };
+
 export default TaskItem;
